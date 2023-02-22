@@ -1,10 +1,13 @@
 package monk3.ecommerce.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 
 public class Image {
-
-	@Id
+	
+    @Id
+    @Field("href")
 	private String href;
 
 	public Image() {

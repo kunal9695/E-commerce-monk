@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.Builder;
+
+@Builder
 public class CategoryList {
 
 	private int page;

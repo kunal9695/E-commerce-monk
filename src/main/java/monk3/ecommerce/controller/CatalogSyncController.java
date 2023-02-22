@@ -29,23 +29,13 @@ public class CatalogSyncController {
 
 	@Autowired
 	private CatalogSyncService catalogSyncService;
-	@Autowired
-	private CategoryRepository repository;
-
-	@GetMapping("/categories")
-	public ResponseEntity<List<Category>> getCategories() {
-		List<Category> categories = repository.findAll();
-		if (categories.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		}
-		return new ResponseEntity<>(categories, HttpStatus.OK);
-	}
+	
 
 	@GetMapping("/sync")
-	public ResponseEntity<CategoryList> syncCategories(@RequestParam int limit, @RequestParam int page) {
+	public ResponseEntity<Object> syncCategories() {
 		try {
-			CategoryList categoryList = catalogSyncService.syncCategories(limit, page);
-			return new ResponseEntity<>(categoryList, HttpStatus.OK);
+			catalogSyncService.syncCategories();
+			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (IOException e) {
 			LOGGER.error("Error occurred while syncing categories: ", e);
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -54,23 +44,4 @@ public class CatalogSyncController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
-
-	@GetMapping("/syncProducts")
-	public ResponseEntity<ProductList> syncProducts(@RequestParam int limit, @RequestParam int page,
-			@RequestParam String categoryID) {
-		try {
-			ProductList productList = catalogSyncService.syncProducts(limit, page, categoryID);
-			return new ResponseEntity<>(productList, HttpStatus.OK);
-		} catch (IOException e) {
-			LOGGER.error("Error occurred while syncing products: ", e);
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (CustomException e) {
-			LOGGER.error("Custom exception occurred while syncing products: ", e);
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		} catch (IllegalArgumentException e) {
-			LOGGER.error("Invalid input received while syncing products: ", e);
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-	}
-
 }
